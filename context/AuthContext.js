@@ -13,49 +13,46 @@ export const AuthProvider = ({ children }) => {
 
   // Register user
   const signup = async (user) => {
-    // const res = await fetch(`/api/signup`, {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(user),
-    // });
+    const res = await fetch(`/api/signup`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    });
 
-    // const data = await res.json();
+    const data = await res.json();
 
-    // if (res.ok) {
-    //   setUser(data.user);
-    //   router.push("/account/dashboard");
-    // } else {
-    //   setError(data.message);
-    //   setError(null);
-    // }
+    if (res.ok) {
+      setUser(data.user);
+      router.push("/dashboard/tasks");
+    } else {
+      setError(data.message);
+      setError(null);
+    }
     console.log("User: ", user);
   };
 
   // Login user
-  const login = async ({ email: identifier, password }) => {
-    // const res = await fetch(`/api/login`, {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({
-    //     identifier,
-    //     password,
-    //   }),
-    // });
+  const login = async ({ email, password }) => {
+    const res = await fetch(`/api/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
 
-    // const data = await res.json();
+    const data = await res.json();
 
-    // if (res.ok) {
-    //   setUser(data.user);
-    //   router.push("/account/dashboard");
-    // } else {
-    //   setError(data.message);
-    //   setError(null);
-    // }
-    console.log(`Email: ${identifier}, password: ${password}`);
+    if (res.ok) {
+      setUser(data.user);
+      router.push("/dashboard/tasks");
+    } else {
+      setError(data.message);
+      setError(null);
+    }
+    console.log(`Email: ${email}, password: ${password}`);
   };
 
   // Logout user

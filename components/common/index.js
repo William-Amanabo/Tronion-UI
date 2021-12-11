@@ -3,7 +3,7 @@ export * from "./Line";
 export * from "./Text";
 export * from "./Input";
 export * from "./Button";
-// export * from "./Modal";
+export * from "./Counter";
 export * from "./Radial";
 export * from "./Heading";
 export * from "./FormLinkBox";

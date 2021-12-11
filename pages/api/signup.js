@@ -1,45 +1,32 @@
-import cookie from "cookie";
-import { API_URL } from "@/config/index";
+import connectDB from "../../middleware/mongodb";
+// import bcrypt from 'bcryptjs';
+import User from "../../models/user";
 
-export default async (req, res) => {
+const signup = async (req, res) => {
   if (req.method === "POST") {
-    const { username, email, password } = req.body;
-
-    const strapiRes = await fetch(`${API_URL}/auth/local/signup`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username,
-        email,
-        password,
-      }),
-    });
-
-    const data = await strapiRes.json();
-
-    if (strapiRes.ok) {
-      // Set Cookie
-      res.setHeader(
-        "Set-Cookie",
-        cookie.serialize("token", data.jwt, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV !== "development",
-          maxAge: 60 * 60 * 24 * 7, // 1 week
-          sameSite: "strict",
-          path: "/",
-        })
-      );
-
-      res.status(200).json({ user: data.user });
+    console.log(req.body);
+    // Check if userName, email or password is provided
+    const { userName, email, password } = req.body;
+    if (userName && email && password) {
+      try {
+        // Hash password to store it in DB
+        var user = new User({
+          userName,
+          email,
+          password,
+        });
+        // Create new user
+        var usercreated = await user.save();
+        return res.status(200).send({ user: usercreated });
+      } catch (error) {
+        return res.status(500).send({ message: error.message });
+      }
     } else {
-      res
-        .status(data.statusCode)
-        .json({ message: data.message[0].messages[0].message });
+      res.status(422).send({ message: "missing credentials" });
     }
   } else {
-    res.setHeader("Allow", ["POST"]);
-    res.status(405).json({ message: `Method ${req.method} not allowed` });
+    res.status(422).send({ message: "req_method_not_supported" });
   }
 };
+
+export default connectDB(signup);
